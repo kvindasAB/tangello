@@ -178,6 +178,8 @@ module.exports = function ( grunt ) {
     'jshint', 'less', 'karma:continuous'
   ]);
 
+  grunt.registerTask( 'dev', [ 'connect:server', 'watch' ] );
+
   grunt.registerTask( 'test:unit', [
     'build'
   ]);
