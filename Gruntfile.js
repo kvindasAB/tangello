@@ -139,7 +139,7 @@ module.exports = function ( grunt ) {
       },
       e2e: {
         options: {
-          configFile: "e2e-tests/protractor-e2e.conf.js", // Target-specific config file
+          configFile: "e2e-tests/protractor.conf.js", // Target-specific config file
           args: {
               baseUrl: 'http://localhost:8100'
           }
