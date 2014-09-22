@@ -7,6 +7,7 @@ module.exports = function ( grunt ) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-protractor-runner');
 
@@ -16,11 +17,6 @@ module.exports = function ( grunt ) {
    * instructions.
    */
   var taskConfig = {
-    /**
-     * We read in our `package.json` file so we can access the package name and
-     * version. It's already there, so we don't repeat ourselves here.
-     */
-    pkg: grunt.file.readJSON("package.json"),
 
     /**
      * `recess` handles our LESS compilation and uglification automatically.
@@ -29,22 +25,11 @@ module.exports = function ( grunt ) {
      */
     less: {
       build: {
-        src: [ '<%= app_files.less %>' ],
-        dest: '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css',
+        src: [ 'app/less/app.less' ],
+        dest: 'app/css/app.css',
         options: {
           compile: true,
           compress: false,
-          noUnderscores: false,
-          noIDs: false,
-          zeroUnits: false
-        }
-      },
-      compile: {
-        src: [ '<%= less.build.dest %>' ],
-        dest: '<%= less.build.dest %>',
-        options: {
-          compile: true,
-          compress: true,
           noUnderscores: false,
           noIDs: false,
           zeroUnits: false
@@ -61,25 +46,38 @@ module.exports = function ( grunt ) {
      * nonetheless inside `src/`.
      */
     jshint: {
-      src: [ 
-        '<%= app_files.js %>'
+      src: [
+        'app/**/*.js',
+        '!app/vendor/**/*.js'
       ],
       test: [
-        '<%= app_files.jsunit %>'
-      ],
-      gruntfile: [
-        'Gruntfile.js'
+        'e2e-tests/**/*.js'
       ],
       options: {
+        globalstrict: true,
         curly: true,
         immed: true,
         newcap: true,
         noarg: true,
         sub: true,
         boss: true,
-        eqnull: true
-      },
-      globals: {}
+        eqnull: true,
+        globals: {
+          'angular': false,
+          'jquery': false,
+          'jasmine': false,
+          'describe': false,
+          'it': false,
+          'beforeEach': false,
+          'afterEach': false,
+          'module': false,
+          'expect': false,
+          'inject': false,
+          'browser': false,
+          'element': false,
+          'by': false
+        }
+      }
     },
 
     /**
@@ -92,21 +90,15 @@ module.exports = function ( grunt ) {
     connect: {
       options: {
         port: 8000,
-        base: '<%= build_dir %>/'
+        base: 'app'
       },
       server: {
         options: {
           keepalive: false
         }
       },
-      serversa: {
+      serverstandalone: {
         options: {
-          keepalive: true
-        }
-      },
-      servercompilesa: {
-        options: {
-          base: '<%= compile_dir %>/',
           keepalive: true
         }
       },
@@ -123,12 +115,12 @@ module.exports = function ( grunt ) {
      */
     karma: {
       unit: {
-        configFile: '<%= build_dir %>/karma-unit.conf.js',
+        configFile: 'karma.conf.js',
         port: 9101,
         background: true
       },
       continuous: {
-        configFile: '<%= build_dir %>/karma-unit.conf.js',
+        configFile: 'karma.conf.js',
         singleRun: true
       }
     },
@@ -147,7 +139,7 @@ module.exports = function ( grunt ) {
       },
       e2e: {
         options: {
-          configFile: "build/protractor-e2e.conf.js", // Target-specific config file
+          configFile: "e2e-tests/protractor-e2e.conf.js", // Target-specific config file
           args: {
               baseUrl: 'http://localhost:8100'
           }
@@ -155,31 +147,35 @@ module.exports = function ( grunt ) {
       }
     },
 
+    watch: {
+      scripts: {
+        files: 'app/**/*.js',
+        tasks: ['jshint']
+      },
+      less: {
+        files: 'app/less/**/*.less',
+        tasks: ['less']
+      },
+      karma: {
+        files: 'app/**/*_test.js',
+        tasks: ['karma:continuous']
+      }
+    }
+
   };
 
-  grunt.initConfig( grunt.util._.extend( taskConfig, userConfig ) );
+  grunt.initConfig( grunt.util._.extend( taskConfig ) );
 
   /**
    * The default task is to build and compile.
    */
-  grunt.registerTask( 'default', [ 'build', 'compile' ] );
+  grunt.registerTask( 'default', [ 'build' ] );
 
   /**
    * The `build` task gets your app ready to run for development and testing.
    */
   grunt.registerTask( 'build', [
-    'clean', 'jshint', 'coffeelint', 'coffee', 'less:build',
-    'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets',
-    'copy:build_appjs', 'copy:build_vendorjs', 'copy:build_apptpl' , 'index:build',
-    'testconfig:unit', 'karma:continuous'
-  ]);
-
-  /**
-   * The `compile` task gets your app ready for deployment by concatenating and
-   * minifying your code.
-   */
-  grunt.registerTask( 'compile', [
-    'ngAnnotate', 'less:compile', 'copy:compile_assets', 'copy:compile_vendorjs', 'requirejs:compile', 'index:compile'
+    'jshint', 'less', 'karma:continuous'
   ]);
 
   grunt.registerTask( 'test:unit', [
@@ -187,7 +183,7 @@ module.exports = function ( grunt ) {
   ]);
 
   grunt.registerTask( 'test:e2e', [
-    'build', 'testconfig:e2e', 'connect:testserver', 'protractor:e2e'
+    'build', 'connect:testserver', 'protractor:e2e'
   ]);
 
 
