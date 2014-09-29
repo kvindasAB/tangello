@@ -10,7 +10,7 @@ describe('myApp.view1 module', function() {
       var $scope = $rootScope.$new();
       var view1Ctrl = $controller('View1Ctrl', {$scope: $scope});
       expect(view1Ctrl).toBeDefined();
-      expect($scope.testvalue, "testvalue");
+      expect($scope.testvar).toBe("testvalue");
     }));
 
   });
