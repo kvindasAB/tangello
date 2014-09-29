@@ -75,7 +75,8 @@ module.exports = function ( grunt ) {
           'inject': false,
           'browser': false,
           'element': false,
-          'by': false
+          'by': false,
+          'console': false
         }
       }
     },
@@ -122,6 +123,12 @@ module.exports = function ( grunt ) {
       continuous: {
         configFile: 'karma.conf.js',
         singleRun: true
+      },
+      debug: {
+        configFile: 'karma.conf.js',
+        port: 9101,
+        background: false,
+        singleRun: false
       }
     },
 
@@ -182,6 +189,10 @@ module.exports = function ( grunt ) {
 
   grunt.registerTask( 'test:unit', [
     'build'
+  ]);
+
+  grunt.registerTask( 'test:unitdebug', [
+    'jshint', 'less', 'karma:debug'
   ]);
 
   grunt.registerTask( 'test:e2e', [

@@ -5,11 +5,12 @@ module.exports = function(config){
 
     files : [
       'app/vendor/angular/angular.js',
-      'app/vendor/angular-route/angular-route.js',
       'app/vendor/angular-mocks/angular-mocks.js',
+      'app/vendor/angular-bootstrap/ui-bootstrap-tpls.js',
+      'app/vendor/angular-ui-router/release/angular-ui-router.js',
 
-      'app/components/**/*.js',
-      'app/view*/**/*.js'
+      'app/js/components/**/*.js',
+      'app/js/view*/**/*.js'
     ],
 
     autoWatch : true,
