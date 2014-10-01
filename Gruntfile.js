@@ -13,14 +13,13 @@ module.exports = function ( grunt ) {
 
 
   /**
-   * This is the configuration object Grunt uses to give each plugin its 
-   * instructions.
+   * This is the configuration object Grunt uses to give each plugin its instructions.
    */
   var taskConfig = {
 
     /**
-     * `recess` handles our LESS compilation and uglification automatically.
-     * Only our `main.less` file is included in compilation; all other files
+     * LESS compilation and uglification automatically.
+     * Only our `app.less` file is included in compilation; all other files
      * must be imported from this file.
      */
     less: {
@@ -43,7 +42,7 @@ module.exports = function ( grunt ) {
      * are linted based on the policies listed in `options`. But we can also
      * specify exclusionary patterns by prefixing them with an exclamation
      * point (!); this is useful when code comes from a third party but is
-     * nonetheless inside `src/`.
+     * nonetheless inside `app/`.
      */
     jshint: {
       src: [
@@ -84,8 +83,7 @@ module.exports = function ( grunt ) {
     /**
      * Connect is a http server provided by grunt.
      * server - http server started on watch
-     * serversa - http server stand-alone
-     * servercompilesa - http server stand-alone pointing to compile_dir
+     * serverstandalone - http server stand-alone
      * testserver - http server used for e2e testing
      */
     connect: {
@@ -151,21 +149,34 @@ module.exports = function ( grunt ) {
               baseUrl: 'http://localhost:8100'
           }
         }
+      },
+      e2edebug: {
+        options: {
+          configFile: "e2e-tests/protractor.conf.js", // Target-specific config file
+          args: {
+            baseUrl: 'http://localhost:8100'
+          },
+          debug: true
+        }
       }
     },
 
+    /**
+     * Watcher configuration: This task watches our file changes and trigger a task accordingly.
+     * 'src': Lints changed files and re-executes unit testing.
+     * 'less': Recompiles less sources.
+     */
     watch: {
-      scripts: {
+      options: {
+        atBegin: true
+      },
+      src: {
         files: 'app/**/*.js',
-        tasks: ['jshint']
+        tasks: ['jshint', 'karma:continuous']
       },
       less: {
         files: 'app/less/**/*.less',
         tasks: ['less']
-      },
-      karma: {
-        files: 'app/**/*_test.js',
-        tasks: ['karma:continuous']
       }
     }
 
@@ -197,6 +208,10 @@ module.exports = function ( grunt ) {
 
   grunt.registerTask( 'test:e2e', [
     'build', 'connect:testserver', 'protractor:e2e'
+  ]);
+
+  grunt.registerTask( 'test:e2edebug', [
+    'build', 'connect:testserver', 'protractor:e2edebug'
   ]);
 
 
