@@ -1,1 +1,18 @@
-<p>This is the partial for view 1.</p>
+<p>This is the partial for view 1. {{title | touppercase | substr5}}</p>
+{{testvar}}
+
+<p helloworld name="title" address="testvar" >before</p>
+<helloworld name="title" address="testvar" >Hola</helloworld>
+<p>after</p>
+
+<div id="innerDiv" ng-controller="View1InnerCtrl" >
+    Value: {{innerVar}}
+</div>
+
+<p>Another copy of InnerDiv</p>
+<div id="innerDiv2" ng-controller="View1InnerCtrl" >
+    1234Value: {{innerVar}}
+</div>
+
+<button ng-click="callService1()" >Call Service1</button>
+<button ng-click="callService2()" >Call Service2</button>
