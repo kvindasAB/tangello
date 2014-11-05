@@ -1,7 +1,8 @@
-<ul>
-    <li ng-repeat="item in tasks">
-        <p>{{item.title}}</p>
-    </li>
-</ul>
+<div>
+    <div ng-repeat="item in tasks" ng-dblclick="selectEditTask(item)">
+        <p ng-if="!isTaskInEditMode(item)">{{item.title}}</p>
+        <input type="text" ng-model="item.title" ng-if="isTaskInEditMode(item)" ng-blur="cleanEditModeTask()" ng-keypress="onEditInputKeyPress($event)" >
+    </div>
+</div>
 
 <input type="text" placeholder="Enter Task Title" ng-model="newTaskTitle"> <button ng-click="addTask(newTaskTitle)">Add Task</button>
