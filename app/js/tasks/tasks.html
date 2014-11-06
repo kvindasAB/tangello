@@ -1,8 +1,24 @@
-<div>
-    <div ng-repeat="item in tasks" ng-dblclick="selectEditTask(item)">
-        <p ng-if="!isTaskInEditMode(item)">{{item.title}}</p>
-        <input type="text" ng-model="item.title" ng-if="isTaskInEditMode(item)" ng-blur="cleanEditModeTask()" ng-keypress="onEditInputKeyPress($event)" >
+<div class="row">
+    <div class="well col-md-3">
+        <div class="panel panel-default" ng-repeat="item in tasks" ng-dblclick="selectEditTask(item)">
+            <div class="panel-body">
+                <span ng-if="!isTaskInEditMode(item)">{{item.title}}</span>
+                <input class="form-control" type="text" ng-model="item.title" ng-if="isTaskInEditMode(item)" ng-blur="cleanEditModeTask()" ng-keypress="onEditInputKeyPress($event)" >
+            </div>
+        </div>
+        <div class="input-group">
+            <form name="newTaskForm">
+                <input type="text" class="form-control" required placeholder="Enter Task Title" ng-model="newTaskTitle">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" ng-disabled="newTaskForm.$invalid" type="button" ng-click="addTask(newTaskTitle)">Add Task</button>
+                </span>
+            </form>
+        </div><!-- /input-group -->
+        <!--
+        <input type="text" >
+        <button >Add Task</button>
+        -->
     </div>
 </div>
 
-<input type="text" placeholder="Enter Task Title" ng-model="newTaskTitle"> <button ng-click="addTask(newTaskTitle)">Add Task</button>
+
